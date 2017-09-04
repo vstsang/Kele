@@ -28,12 +28,11 @@ class Kele
     @messages = JSON.parse(response.body)
   end
 
-  def create_message(sender, recipient_id, subject, message, token = nil)
+  def create_message(sender, recipient_id, subject, message)
     response = self.class.post(base_uri("/messages"),
       body: {
         "sender": sender,
         "recipient_id": recipient_id,
-        "token": token,
         "subject": subject,
         "stripped-text": message
         },
