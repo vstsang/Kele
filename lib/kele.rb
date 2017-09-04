@@ -23,8 +23,33 @@ class Kele
     @mentor_availability = JSON.parse(response.body)
   end
 
+  def get_messages(page_id = nil)
+    response = self.class.get(base_uri("/message_threads#{page_parser(page_id)}"), headers: { "authorization" => @auth_token })
+    @messages = JSON.parse(response.body)
+  end
+
+  def create_message(sender, recipient_id, subject, message, token = nil)
+    response = self.class.post(base_uri("/messages"),
+      body: {
+        "sender": sender,
+        "recipient_id": recipient_id,
+        "token": token,
+        "subject": subject,
+        "stripped-text": message
+        },
+      headers: { "authorization" => @auth_token })
+  end
+
   private
   def base_uri(endpoint)
     "https://www.bloc.io/api/v1/#{endpoint}"
+  end
+
+  def page_parser(page_id)
+    if page_id == nil
+      nil
+    else
+      "?page=#{(page_id)}"
+    end
   end
 end
